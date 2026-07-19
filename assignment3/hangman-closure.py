@@ -5,15 +5,15 @@ def make_hangman(secret_word):
     guesses = []
 
     def hangman_closure(letter):
-        guesses.append(letter)
+        letter = letter.lower()
 
-        displayed_word = ""
+        if letter not in guesses:
+            guesses.append(letter)
 
-        for character in secret_word:
-            if character in guesses:
-                displayed_word += character
-            else:
-                displayed_word += "_"
+        displayed_word = "".join(
+            character if character.lower() in guesses else "_"
+            for character in secret_word
+        )
 
         print(displayed_word)
 
@@ -23,18 +23,17 @@ def make_hangman(secret_word):
 
 
 secret_word = input("Enter the secret word: ").lower()
+hangman_game = make_hangman(secret_word)
 
-game = make_hangman(secret_word)
+word_is_guessed = False
 
-word_guessed = False
-
-while not word_guessed:
+while not word_is_guessed:
     guess = input("Guess a letter: ").lower()
 
     if len(guess) != 1:
         print("Please enter one letter.")
         continue
 
-    word_guessed = game(guess)
+    word_is_guessed = hangman_game(guess)
 
 print("You guessed the word!")

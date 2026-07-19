@@ -1,47 +1,56 @@
+# Task 1: Writing and Testing a Decorator
+
 import logging
+
 
 logger = logging.getLogger(__name__ + "_parameter_log")
 logger.setLevel(logging.INFO)
-logger.addHandler(logging.FileHandler("./decorator.log", "a"))
+
+file_handler = logging.FileHandler("./decorator.log", "w")
+logger.addHandler(file_handler)
+
 
 def logger_decorator(func):
     def wrapper(*args, **kwargs):
-        logger.info(f"function: {func.__name__}")
-
-        if args:
-            logger.info(f"positional parameters: {list(args)}")
-        else:
-            logger.info("positional parameters: none")
-
-        if kwargs:
-            logger.info(f"keyword parameters: {kwargs}")
-        else:
-            logger.info("keyword parameters: none")
-
         result = func(*args, **kwargs)
 
+        positional_parameters = list(args) if args else "none"
+        keyword_parameters = kwargs if kwargs else "none"
+
+        logger.info(f"function: {func.__name__}")
+        logger.info(
+            f"positional parameters: {positional_parameters}"
+        )
+        logger.info(
+            f"keyword parameters: {keyword_parameters}"
+        )
         logger.info(f"return: {result}")
+
         return result
 
     return wrapper
 
-# Function with no parameters that returns nothing
+
+# No parameters and no return value
 @logger_decorator
-def say_hello():
+def no_parameters():
     print("Hello, World!")
 
 
-# Function with any number of positional arguments that returns True
+# Variable number of positional arguments; returns True
 @logger_decorator
-def positional_function(*args):
+def positional_parameters(*args):
     return True
 
 
-# Function with any number of keyword arguments that returns logger_decorator
+# No positional arguments; variable keyword arguments;
+# returns logger_decorator
 @logger_decorator
-def keyword_function(**kwargs):
+def keyword_parameters(**kwargs):
     return logger_decorator
 
-say_hello()
-positional_function(1, 2, 3, "hello")
-keyword_function(name="Joey", assignment=3)
+
+# Mainline code
+no_parameters()
+positional_parameters(1, 2, 3)
+keyword_parameters(name="Joey", course="Python")
