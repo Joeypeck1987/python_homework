@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__ + "_parameter_log")
 logger.setLevel(logging.INFO)
 
-file_handler = logging.FileHandler("./decorator.log", "w")
+file_handler = logging.FileHandler("./decorator.log", "a")
 logger.addHandler(file_handler)
 
 
@@ -17,14 +17,12 @@ def logger_decorator(func):
         positional_parameters = list(args) if args else "none"
         keyword_parameters = kwargs if kwargs else "none"
 
-        logger.info(f"function: {func.__name__}")
         logger.info(
-            f"positional parameters: {positional_parameters}"
-        )
-        logger.info(
-            f"keyword parameters: {keyword_parameters}"
-        )
-        logger.info(f"return: {result}")
+            f"function: {func.__name__}\n"
+            f"positional parameters: {positional_parameters}\n"
+            f"keyword parameters: {keyword_parameters}\n"
+            f"return: {result}"
+)
 
         return result
 
