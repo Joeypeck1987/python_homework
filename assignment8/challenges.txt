@@ -1,0 +1,14 @@
+Task 6: Assignment Challenges
+
+One challenge was that the pip command pointed to an unavailable Python 3.14 installation, while the required packages were 
+installed for Python 3.12. 
+I resolved this by running pip through Python with python -m pip and selecting Python 3.12.2 as the interpreter in VS Code.
+
+Another challenge was that Selenium could not locate Google Chrome because I normally use Brave. 
+Trying to configure ChromeDriver to launch Brave caused a DevToolsActivePort session error, 
+so I installed Chrome as a secondary browser and used the Chrome setup shown in the lesson.
+
+The OWASP project page had also changed since the assignment was written. 
+The original page now links to the current OWASP Top 10:2025 page instead of displaying the ten vulnerabilities directly. 
+I followed that official link, inspected the current HTML, 
+and used XPath to move from the Top 10:2025 heading to the ordered list containing the ten vulnerability links.

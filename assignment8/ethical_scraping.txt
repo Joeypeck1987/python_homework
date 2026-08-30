@@ -1,0 +1,18 @@
+Task 5: Ethical Web Scraping
+
+1. Which sections of the website are restricted for crawling?
+
+Wikipedia restricts dynamic and internal sections such as /w/, /api/, /trap/, and versions of /wiki/Special:. 
+It also restricts many search, administrative, moderation, deletion, copyright, spam, arbitration, and discussion pages across its different language editions. 
+Some exceptions are explicitly allowed, including particular API documentation, mobile-view API requests, page loading, and sitemap paths.
+
+2. Are there specific rules for certain user agents?
+
+Yes. Many specifically named user agents, including MJ12bot, Mediapartners-Google, UbiCrawler, DOC, WebCopier, Fetch, HTTrack, and wget, are completely disallowed from crawling the website. 
+Wikipedia work bots such as IsraBot and Orthogaffe have empty Disallow rules, while SemrushBot is assigned a crawl delay of five seconds. 
+General rules under User-agent: * apply to crawlers that do not have their own specific section.
+
+Reflection
+
+Websites use robots.txt to tell automated crawlers which areas may be accessed and which areas should be avoided. 
+Following these instructions and respecting crawl delays reduces unnecessary server traffic, protects sensitive or disruptive sections, and promotes responsible web scraping.
