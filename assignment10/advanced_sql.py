@@ -4,8 +4,9 @@ import sqlite3
 # Task 1: Complex JOINs with Aggregation
 def main():
     # Run this program from python_homework/assignment10.
-    # Read-only mode prevents creating an empty database if the path is wrong.
-    connection = sqlite3.connect("file:../db/lesson.db?mode=ro", uri=True)
+    # Open the existing database for reading and writing.
+    connection = sqlite3.connect("file:../db/lesson.db?mode=rw", uri=True)
+    connection.execute("PRAGMA foreign_keys = 1")
     try:
         cursor = connection.cursor()
         cursor.execute("""
@@ -22,7 +23,7 @@ def main():
         for order_id, total_price in cursor.fetchall():
             print(f"Order ID: {order_id}, Total price: ${total_price:.2f}")
 
-                    # Task 2: Understanding Subqueries
+        # Task 2: Understanding Subqueries
         print("\nTask 2: Average order price per customer")
 
         cursor.execute("""
@@ -49,6 +50,68 @@ def main():
                 print(f"{customer_name}: No order total available")
             else:
                 print(f"{customer_name}: ${average_total_price:.2f}")
+
+        # Task 3: An Insert Transaction Based on Data
+        with connection:
+            connection.execute("BEGIN")
+
+            cursor.execute(
+                "SELECT customer_id FROM customers WHERE customer_name = ?",
+                ("Perez and Sons",)
+            )
+            customer_id = cursor.fetchone()[0]
+
+            cursor.execute("""
+                SELECT product_id
+                FROM products
+                ORDER BY price, product_id
+                LIMIT 5
+            """)
+            products = cursor.fetchall()
+
+            if len(products) != 5:
+                raise ValueError("Five products are required for this order.")
+
+            cursor.execute("""
+                SELECT employee_id
+                FROM employees
+                WHERE first_name = ? AND last_name = ?
+            """, ("Miranda", "Harris"))
+            employee_id = cursor.fetchone()[0]
+
+            cursor.execute("""
+                INSERT INTO orders (customer_id, employee_id, date)
+                VALUES (?, ?, date('now'))
+                RETURNING order_id
+            """, (customer_id, employee_id))
+            order_id = cursor.fetchall()[0][0]
+
+            cursor.executemany("""
+                INSERT INTO line_items (order_id, product_id, quantity)
+                VALUES (?, ?, ?)
+            """, [
+                (order_id, product_id, 10)
+                for (product_id,) in products
+            ])
+
+        print(f"\nTask 3: Line items for new order {order_id}")
+
+        cursor.execute("""
+            SELECT line_items.line_item_id,
+                   line_items.quantity,
+                   products.product_name
+            FROM line_items
+            JOIN products
+                ON line_items.product_id = products.product_id
+            WHERE line_items.order_id = ?
+            ORDER BY line_items.line_item_id
+        """, (order_id,))
+
+        for line_item_id, quantity, product_name in cursor.fetchall():
+            print(
+                f"Line item ID: {line_item_id}, "
+                f"Quantity: {quantity}, Product: {product_name}"
+            )
     finally:
         connection.close()
 
