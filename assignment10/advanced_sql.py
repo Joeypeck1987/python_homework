@@ -112,6 +112,30 @@ def main():
                 f"Line item ID: {line_item_id}, "
                 f"Quantity: {quantity}, Product: {product_name}"
             )
+
+        # Task 4: Aggregation with HAVING
+        print("\nTask 4: Employees with more than 5 orders")
+
+        cursor.execute("""
+            SELECT employees.employee_id,
+                   employees.first_name,
+                   employees.last_name,
+                   COUNT(orders.order_id) AS order_count
+            FROM employees
+            JOIN orders
+                ON employees.employee_id = orders.employee_id
+            GROUP BY employees.employee_id,
+                     employees.first_name,
+                     employees.last_name
+            HAVING COUNT(orders.order_id) > 5
+            ORDER BY employees.employee_id;
+        """)
+
+        for employee_id, first_name, last_name, order_count in cursor.fetchall():
+            print(
+                f"Employee ID: {employee_id}, "
+                f"Name: {first_name} {last_name}, Orders: {order_count}"
+            )
     finally:
         connection.close()
 
