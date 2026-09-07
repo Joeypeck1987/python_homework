@@ -23,7 +23,7 @@ def main():
         for order_id, total_price in cursor.fetchall():
             print(f"Order ID: {order_id}, Total price: ${total_price:.2f}")
 
-        # Task 2: Understanding Subqueries
+    # Task 2: Understanding Subqueries
         print("\nTask 2: Average order price per customer")
 
         cursor.execute("""
@@ -47,14 +47,18 @@ def main():
 
         for customer_name, average_total_price in cursor.fetchall():
             if average_total_price is None:
-                print(f"{customer_name}: No order total available")
+                print(
+                    f"customer_name: {customer_name}, "
+                    "average_total_price: NULL"
+                )
             else:
-                print(f"{customer_name}: ${average_total_price:.2f}")
+                print(
+                    f"customer_name: {customer_name}, "
+                    f"average_total_price: ${average_total_price:.2f}"
+                )
 
-        # Task 3: An Insert Transaction Based on Data
+    # Task 3: An Insert Transaction Based on Data
         with connection:
-            connection.execute("BEGIN")
-
             cursor.execute(
                 "SELECT customer_id FROM customers WHERE customer_name = ?",
                 ("Perez and Sons",)
@@ -113,7 +117,7 @@ def main():
                 f"Quantity: {quantity}, Product: {product_name}"
             )
 
-        # Task 4: Aggregation with HAVING
+    # Task 4: Aggregation with HAVING
         print("\nTask 4: Employees with more than 5 orders")
 
         cursor.execute("""
